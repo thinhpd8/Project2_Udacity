@@ -25,6 +25,16 @@ from nltk.corpus import stopwords
 lemmatizer = WordNetLemmatizer()
 
 def load_data(database_filepath):
+    """
+    Loads data from database.
+    
+    Input:
+    database_filepath: Filepath to the database
+    
+    Output:
+    X: Features
+    Y: Target
+    """
     # load data from database
     engine = create_engine(f'sqlite:///{database_filepath}')
     df = pd.read_sql_table('disaster_messages', con=engine)
@@ -33,10 +43,17 @@ def load_data(database_filepath):
     return X,Y
 
 
-    
-
 
 def tokenize(text):
+    """
+    Tokenize and lemmatize text.
+    
+    Input:
+    text: Text to be tokenized
+    
+    Output:
+    clean_tokens: cleaned tokens 
+    """
         # Convert to lowercase
     text = text.lower()
 
@@ -56,6 +73,12 @@ def tokenize(text):
 
 
 def build_model():
+    """
+    Build classifier and tune model.
+    
+    output:
+    cv: Classifier 
+    """  
     pipeline = Pipeline([
     ('vect', CountVectorizer(tokenizer=tokenize)),
     ('tfidf', TfidfTransformer()),
@@ -77,6 +100,17 @@ def display_results(y_test, y_pred):
 
     
 def evaluate_model(model, X_test, Y_test):
+    """
+    Evaluate the performance of model and return classification report. 
+    
+    Input:
+    model: classifier
+    X_test: test dataset
+    Y_test: labels for test data in X_test
+    
+    Output:
+    Classification report for each column
+    """
     y_pred = model.predict(X_test)
 
     # best hyper-parameters
@@ -87,6 +121,7 @@ def evaluate_model(model, X_test, Y_test):
 
 
 def save_model(model, model_filepath):
+    """ output is the final model as a pickle file."""
     pickle.dump(model, open(model_filepath, 'wb'))
 
 def load_model(model_filepath):
@@ -94,6 +129,7 @@ def load_model(model_filepath):
 
 
 def main():
+    """ Build the model, train the model, evaluate the model, save the model."""
     if len(sys.argv) == 3:
         database_filepath, model_filepath = sys.argv[1:]
         print('Loading data...\n    DATABASE: {}'.format(database_filepath))
