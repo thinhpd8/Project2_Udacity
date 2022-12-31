@@ -6,6 +6,17 @@ import sqlalchemy
 from sqlalchemy import create_engine
 
 def load_data(messages_filepath, categories_filepath):
+    """
+    Loads datasets from 2 filepaths.
+    
+    Parameters:
+    messages_filepath: data about messages from csv file
+    categories_filepath: data about categories from csv file
+    
+    Returns:
+    df: dataframe was merged from messages_filepath and categories_filepath 
+    
+    """
     #input data form file:
     messages = pd.read_csv(messages_filepath)
     categories = pd.read_csv(categories_filepath)
@@ -17,6 +28,16 @@ def load_data(messages_filepath, categories_filepath):
 
 
 def clean_data(df):
+     """
+    Cleans data of dataframe.
+    
+    input:
+    df: DataFrame
+    
+    ouput:
+    df: Cleaned DataFrame
+    
+    """
     # make a dataframe of the 36 individual category columns
     categories = df['categories'].str.split(pat=';', expand=True)
     #select the needed row and modify it
@@ -40,11 +61,13 @@ def clean_data(df):
 
 
 def save_data(df, database_filepath):
+    """save df in a SQLite database."""
     engine = create_engine('sqlite:///{}'.format(database_filepath))
     df.to_sql('disaster_messages', con = engine, index=False, if_exists='replace')
     
 
 def main():
+    """Loads data, cleans data, saves data to database"""
     if len(sys.argv) == 4:
         messages_filepath, categories_filepath, database_filepath = sys.argv[1:]
 
